@@ -1,0 +1,8 @@
+sentence-transformers
+vectordb
+docarray[weaviate]
+gradio
+requests
+flask
+numpy
+hnswlib==0.7.0
