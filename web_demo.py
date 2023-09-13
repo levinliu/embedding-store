@@ -2,6 +2,7 @@ import numpy as np
 import gradio as gr
 
 from data_indexer import index_data, get_top_n_match_item
+from logredirect import redirect_stdout, sys_redirect_stdout
 from web import generate_embedding
 
 
@@ -53,4 +54,10 @@ with gr.Blocks(title="EmbeddingStore") as demo:
     image_button.click(lookup, inputs=[keyword_input, limit_input], outputs=image_output)
 
 print("starting the gradio app")
-demo.launch()
+import os
+
+port = int(os.environ['LEVIN_TECH_APP_PORT']) if 'LEVIN_TECH_APP_PORT' in os.environ else 7086
+
+sys_redirect_stdout(os.path.join(os.getcwd(),'app.log'))
+
+demo.launch(server_port=port, server_name="0.0.0.0")
