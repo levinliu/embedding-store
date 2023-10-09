@@ -35,7 +35,8 @@ RUN set -x && curl https://www.python.org/ftp/python/3.9.1/Python-3.9.1.tgz --ou
     cd /tmp/Python-3.9.1   &&\
     ./configure --enable-optimizations  &&\
     make altinstall &&\
-    rm -r /tmp/Python-3.9.1.tgz
+    rm -r /tmp/Python-3.9.1.tgz &&\
+    rm -rf /tmp/Python-3.9.1
 
 WORKDIR /tmp
 RUN yum -y install epel-release
@@ -61,14 +62,15 @@ RUN set -x  && cd /app && ls -rtla && source venv/bin/activate
 RUN yum install -y gcc-c++
 
 COPY requirements.txt /app/
-RUN cd /app && source venv/bin/activate && pip3 install -r requirements.txt
+#remove cache
+RUN cd /app && source venv/bin/activate && pip3 install -r requirements.txt && rm -rf /root/.cache
 
 #https://stackoverflow.com/questions/71027006/assertionerror-inside-of-ensure-local-distutils-when-building-a-pyinstaller-exe
 #downgrade to lower version to avoid build issue
 RUN cd /app && source venv/bin/activate &&  pip3 install setuptools==59.8.0
 
 COPY /template_scripts/start_app.sh /app/start_app.sh
-COPY models /app/models
+#COPY models /app/models
 
 
 COPY *.py /app
@@ -83,7 +85,7 @@ ENV LEVIN_TECH_MODEL_PATH "/app/models/all-MiniLM-L6-v2"
 EXPOSE 8015 8080 8083  8084 9000 10000
 WORKDIR /
 
-VOLUME ["/app/notebook"]
+VOLUME ["/app/models"]
 
 ENTRYPOINT ["bash", "/app/start_app.sh"]
 #ENTRYPOINT ["python", "-m", "SimpleHTTPServer", "8080"]
