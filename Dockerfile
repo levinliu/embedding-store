@@ -92,3 +92,4 @@ ENTRYPOINT ["bash", "/app/start_app.sh"]
 # https://docs.docker.com/get-started/publish-your-own-image/
 # start localhost:8080
 #docker exec -it paddle-vs sh
+
